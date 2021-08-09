@@ -1,7 +1,7 @@
 repositories:
     # helm-git powered repository: You can treat any Git repository as a charts repository
     - name: virtualassistant
-      url: git+https://{{ requiredEnv "GITHUB_USER" }}:{{ requiredEnv "GITHUB_TOKEN" }}@github.com/DTS-STN/virtual-assistant-mirror@helm/charts?ref=main
+      url: git+https://{{ requiredEnv "GITHUB_USER" }}:{{ requiredEnv "GITHUB_TOKEN" }}@github.com/Toad-Labs/virtual-assistant-mirror@helm/charts?ref=main
    
 environments:
     benrd: 
