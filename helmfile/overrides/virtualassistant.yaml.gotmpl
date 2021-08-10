@@ -1,21 +1,36 @@
 image:
-  repository: mtscontainers.azurecr.io/virtualassistant
+  repository: "{{ requiredEnv "ACR_DOMAIN" }}/{{ requiredEnv "PROJECT" }}"
   tag: "{{ requiredEnv "DOCKER_TAG" }}" 
   pullPolicy: Always
+{{ if (eq .Environment.Name "prototype")}}  
+replicaCount: 4
+{{ else }}
+replicaCount: 1
+{{ end}}
 
 extraEnv:
   - name: NOTIFY_BASE_API_URL
     value: "https://api.notification.canada.ca"
-
+  - name: REPORT_A_PROBLEM_ENABLED
+    value: "true"
+  - name: NOTIFY_API_KEY
+    value: {{ requiredEnv "NOTIFY_API_KEY" | quote }}
+  - name: NOTIFY_REPORT_A_PROBLEM_EMAIL
+    value: {{ requiredEnv "NOTIFY_REPORT_A_PROBLEM_EMAIL" | quote }}
+  - name: NOTIFY_REPORT_A_PROBLEM_TEMPLATE_ID
+    value: {{ requiredEnv "NOTIFY_REPORT_A_PROBLEM_TEMPLATE_ID" | quote }}
+  {{/* WE ARE ALSO SENDING IN NEXT_CONTENT_API, NEXT_BUILD_ID AND NEXT_BUILD_DATE AS ARGUMENTS IN TC  */}}
 ingress:
       enabled: true
       hosts:
       {{- if or (eq .Environment.Name "prod-blue") (eq .Environment.Name "prod-green") }}
-          - virtualassistant.{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN" }}
-          - virtualassistant.{{ requiredEnv "BASE_DOMAIN" }}
+          - {{ requiredEnv "PROJECT" }}.{{ requiredEnv "BASE_DOMAIN" }}
+      {{ else if (eq .Environment.Name "prototype")}}
+          - {{ requiredEnv "PROJECT" }}.{{ requiredEnv "BASE_DOMAIN" }}
+          - {{ requiredEnv "PROJECT" }}.{{ requiredEnv "BASE_DOMAIN_DEV" }}
       {{ else }}
-          - virtualassistant-{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN_DEV" }}
-          - virtualassistant.{{ requiredEnv "BASE_DOMAIN_DEV" }}
+          - {{ requiredEnv "PROJECT" }}-{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN_DEV" }}
+          - {{ requiredEnv "PROJECT" }}.{{ requiredEnv "BASE_DOMAIN_DEV" }}
       {{ end }} 
       annotations: {}
       # kubernetes.io/ingress.class: traefik
@@ -28,4 +43,4 @@ livenessDelay: 60
 readinessDelay: 60
 livenessPath: /
 readinessPath: /
-port: 80
+port: 3000
