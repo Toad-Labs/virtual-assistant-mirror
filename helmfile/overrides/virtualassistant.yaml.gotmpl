@@ -11,15 +11,7 @@ replicaCount: 1
 extraEnv:
   - name: NOTIFY_BASE_API_URL
     value: "https://api.notification.canada.ca"
-  - name: REPORT_A_PROBLEM_ENABLED
-    value: "true"
-  - name: NOTIFY_API_KEY
-    value: {{ requiredEnv "NOTIFY_API_KEY" | quote }}
-  - name: NOTIFY_REPORT_A_PROBLEM_EMAIL
-    value: {{ requiredEnv "NOTIFY_REPORT_A_PROBLEM_EMAIL" | quote }}
-  - name: NOTIFY_REPORT_A_PROBLEM_TEMPLATE_ID
-    value: {{ requiredEnv "NOTIFY_REPORT_A_PROBLEM_TEMPLATE_ID" | quote }}
-  {{/* WE ARE ALSO SENDING IN NEXT_CONTENT_API, NEXT_BUILD_ID AND NEXT_BUILD_DATE AS ARGUMENTS IN TC  */}}
+
 ingress:
       enabled: true
       hosts:
